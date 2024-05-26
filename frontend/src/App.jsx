@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import Dashboard from './pages/Dashboard'
+import StartEvent from './pages/StartEvent'
 import Login from './components/Login'
 
  
@@ -26,6 +27,10 @@ function App() {
   {
     path:"/dashboard",
     element:<Dashboard/>
+  },
+  {
+    path:"/eventStart/:eventId",
+    element:<StartEvent/>
   }
  ])
 

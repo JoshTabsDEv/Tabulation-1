@@ -23,6 +23,14 @@ module.exports = (sequelize, DataTypes) => {
         key: 'event_id'
       }
     }
+  }, {
+    timestamps: false,
+
+  // If don't want createdAt
+  createdAt: false,
+
+  // If don't want updatedAt
+  updatedAt: false,
   }, {});
 
   Judge.associate = function(models) {

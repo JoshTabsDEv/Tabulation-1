@@ -8,7 +8,9 @@ app.use(express.json());
 app.use(cors());
 
 const testRouter  = require("./routes/Test")
+const testRouter1 = require("./routes/Judge")
 app.use("/test", testRouter)
+app.use("/setUp", testRouter1)
 
 db.sequelize.sync().then(() => {
     
