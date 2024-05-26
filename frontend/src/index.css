@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.card {
+  border-radius: 23px;
+  background: #cecfce;
+  box-shadow:  20px 20px 60px #bbbcbb,
+               -20px -20px 60px #e1e2e1;
+}
+.wrapper{
+  height: 100vh;
+  width: auto;
+}
