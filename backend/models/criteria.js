@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    criteria_weight: {
-      type: DataTypes.FLOAT,
+    criteria_percentage: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     event_id: {
@@ -23,7 +23,15 @@ module.exports = (sequelize, DataTypes) => {
         key: 'event_id'
       }
     }
-  }, {});
+  }, {
+    timestamps: false,
+
+  // If don't want createdAt
+  createdAt: false,
+
+  // If don't want updatedAt
+  updatedAt: false,
+  },{});
 
   Criteria.associate = function(models) {
     // Define the association to Event

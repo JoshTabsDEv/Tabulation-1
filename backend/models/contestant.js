@@ -23,7 +23,15 @@ module.exports = (sequelize, DataTypes) => {
           key: 'event_id'
         }
       }
-    }, {});
+    },{
+      timestamps: false,
+  
+    // If don't want createdAt
+    createdAt: false,
+  
+    // If don't want updatedAt
+    updatedAt: false,
+    } ,{});
   
     Contestant.associate = function(models) {
       // associations can be defined here
