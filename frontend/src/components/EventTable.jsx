@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, InputAdornment, Grid, Card, CardHeader, CardContent, CardActions, Typography, Tooltip, IconButton, Box, Collapse, Alert } from '@mui/material';
-import { Event as EventIcon, DateRange as DateRangeIcon, LocationOn as LocationOnIcon, Add as AddIcon, Delete as DeleteIcon, Start as StartIcon } from '@mui/icons-material';
+import { Event as EventIcon, DateRange as DateRangeIcon, LocationOn as LocationOnIcon, Add as AddIcon, Delete as DeleteIcon, Start as StartIcon, Visibility as VisibilityIcon} from '@mui/icons-material';
 import { Add as PlusIcon, Edit as EditIcon, Close as CloseIcon } from '@mui/icons-material';
 import { Formik, Form } from "formik";
 import Navbar from './Navbar';
@@ -110,6 +110,10 @@ function EventTable() {
     navigate(`/eventStart/${eventId}`);
   };
 
+  const handleViewScore = (eventId) => {
+    navigate(`/Scores/${eventId}`);
+  };
+
   return (
     <div>
       <Navbar name="Event Management" />
@@ -180,6 +184,11 @@ function EventTable() {
                             <Tooltip title="Start Event">
                               <IconButton onClick={() => handleStartEvent(event.event_id)}>
                                 <StartIcon style={{ color: 'green' }} />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="View Scores">
+                              <IconButton onClick={() => handleViewScore(event.event_id)}>
+                                <VisibilityIcon style={{ color: 'grey' }} />
                               </IconButton>
                             </Tooltip>
                           </td>

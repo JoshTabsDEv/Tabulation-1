@@ -9,8 +9,12 @@ app.use(cors());
 
 const testRouter  = require("./routes/Test")
 const testRouter1 = require("./routes/Judge")
+const testRouter2 = require("./routes/auth")
+const testRouter3 = require("./routes/event")
 app.use("/test", testRouter)
 app.use("/setUp", testRouter1)
+app.use("/auth", testRouter2)
+app.use("/event", testRouter3)
 
 db.sequelize.sync().then(() => {
     

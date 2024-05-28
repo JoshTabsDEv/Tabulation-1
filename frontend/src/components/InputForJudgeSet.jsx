@@ -1,12 +1,12 @@
-import React, { useState} from 'react';
-import { Dialog,Alert, DialogTitle, DialogContent, DialogActions, TextField, Button, InputAdornment, Grid, Typography, Card, CardContent, Container } from '@mui/material';
+import React, { useState } from 'react';
+import { Dialog, Alert, DialogTitle, DialogContent, DialogActions, TextField, Button, InputAdornment, Grid, Typography, Card, CardContent, Container } from '@mui/material';
 import { Event as EventIcon } from '@mui/icons-material';
 import { Formik, Form } from "formik";
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function InputForJudgeSet() {
-  const {eventId} = useParams()
+  const { eventId } = useParams();
   const [noOfJudges, setNoOfJudges] = useState('');
   const [noOfContestants, setNoOfContestants] = useState('');
   const [noOfCriteria, setNoOfCriteria] = useState('');
@@ -16,7 +16,7 @@ function InputForJudgeSet() {
   const [contestants, setContestants] = useState([]);
   const [criteria, setCriteria] = useState([]);
   const [totalPercentageError, setTotalPercentageError] = useState(false);
-  const [checkFields, setCheckFields] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpenAddJudgeDialog = () => {
     setOpenAddJudgeDialog(true);
@@ -35,51 +35,49 @@ function InputForJudgeSet() {
     handleCloseAddJudgeDialog();
   };
 
-  const handleSubmit = async () => {
-    
-    const totalPercentage = criteria.reduce((total, criteriaItem) => total + Number(criteriaItem.percentage), 0);
+  const generateJudgeCode = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
 
+  const handleSubmit = async () => {
+    const totalPercentage = criteria.reduce((total, criteriaItem) => total + Number(criteriaItem.percentage), 0);
 
     if (totalPercentage !== 100) {
       setTotalPercentageError(true);
       return;
     }
 
-    // Reset totalPercentageError if validation passes
     setTotalPercentageError(false);
 
     try {
-      // Construct an array of judge data
       const judgeData = judges.map((judgeName, index) => ({
-        judge_no: (index + 1).toString(), // Judge number starts from 1 (index + 1)
+        judge_no: (index + 1).toString(),
         judge_name: judgeName,
-        event_id: eventId // Use the eventId if available
+        judge_code: generateJudgeCode(), // Generate a unique code for each judge
+        event_id: eventId
       }));
-  
-      // Construct an array of contestant data
+
       const contestantData = contestants.map((contestantName, index) => ({
-        contestant_no: (index + 1).toString(), // Contestant number starts from 1 (index + 1)
+        contestant_no: (index + 1).toString(),
         contestant_name: contestantName,
-        event_id: eventId // Use the eventId if available
+        event_id: eventId
       }));
+
       const criteriaData = criteria.map((criterion) => ({
         criteria_name: criterion.name,
         criteria_percentage: criterion.percentage,
         event_id: eventId
       }));
-  
-  
-      // Send both judgeData and contestantData arrays to the backend API
-      await axios.post('http://localhost:8001/setUp', { judges: judgeData, contestants: contestantData, criterias: criteriaData});
-  
-      // Alert the user that the data was saved successfully
+
+      await axios.post('http://localhost:8001/setUp', { judges: judgeData, contestants: contestantData, criterias: criteriaData });
+
       alert('Data saved successfully');
+      navigate(`/GenerateJudgeCredentials/${eventId}`);
     } catch (error) {
       console.error('Error saving data:', error);
       alert('Failed to save data');
     }
   };
-  
 
   return (
     <Container>
@@ -168,103 +166,102 @@ function InputForJudgeSet() {
           <CardContent>
             <Typography variant="h5" gutterBottom style={{ marginTop: '20px', marginBottom: '10px' }}>Judges</Typography>
             <Card style={{ marginTop: '20px', padding: '20px' }}>
-            <CardContent>
-            
-            <Grid container spacing={2}>
-              {[...Array(Number(noOfJudges))].map((_, index) => (
-                <Grid item xs={12} sm={6} key={index}>
-                  <TextField
-                    label={`Judge ${index + 1}`}
-                    variant="outlined"
-                    fullWidth
-                    name={`judge${index + 1}`}
-                    onChange={(e) => {
-                      const newJudges = [...judges];
-                      newJudges[index] = e.target.value;
-                      setJudges(newJudges);
-                    }}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start"><EventIcon /></InputAdornment>,
-                    }}
-                    style={{ marginTop: "10px" }}
-                  />
+              <CardContent>
+                <Grid container spacing={2}>
+                  {[...Array(Number(noOfJudges))].map((_, index) => (
+                    <Grid item xs={12} sm={6} key={index}>
+                      <TextField
+                        label={`Judge ${index + 1}`}
+                        variant="outlined"
+                        fullWidth
+                        name={`judge${index + 1}`}
+                        onChange={(e) => {
+                          const newJudges = [...judges];
+                          newJudges[index] = e.target.value;
+                          setJudges(newJudges);
+                        }}
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start"><EventIcon /></InputAdornment>,
+                        }}
+                        style={{ marginTop: "10px" }}
+                      />
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
-            </CardContent>
+              </CardContent>
             </Card>
             <Card style={{ marginTop: '20px', padding: '20px' }}>
-            <CardContent>
-              <Typography variant="h5" gutterBottom style={{ marginTop: '20px', marginBottom: '10px' }}>Contestants</Typography>
-              <Grid container spacing={2}>
-                {[...Array(Number(noOfContestants))].map((_, index) => (
-                  <Grid item xs={12} sm={6} key={index}>
-                    <TextField
-                      label={`Contestant ${index + 1}`}
-                      variant="outlined"
-                      fullWidth
-                      name={`contestant${index + 1}`}
-                      onChange={(e) => {
-                        const newContestants = [...contestants];
-                        newContestants[index] = e.target.value;
-                        setContestants(newContestants);
-                      }}
-                      InputProps={{
-                        startAdornment: <InputAdornment position="start"><EventIcon /></InputAdornment>,
-                      }}
-                      style={{ marginTop: "10px" }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </CardContent>
+              <CardContent>
+                <Typography variant="h5" gutterBottom style={{ marginTop: '20px', marginBottom: '10px' }}>Contestants</Typography>
+                <Grid container spacing={2}>
+                  {[...Array(Number(noOfContestants))].map((_, index) => (
+                    <Grid item xs={12} sm={6} key={index}>
+                      <TextField
+                        label={`Contestant ${index + 1}`}
+                        variant="outlined"
+                        fullWidth
+                        name={`contestant${index + 1}`}
+                        onChange={(e) => {
+                          const newContestants = [...contestants];
+                          newContestants[index] = e.target.value;
+                          setContestants(newContestants);
+                        }}
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start"><EventIcon /></InputAdornment>,
+                        }}
+                        style={{ marginTop: "10px" }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </CardContent>
             </Card>
             <Typography variant="h5" gutterBottom style={{ marginTop: '20px', marginBottom: '10px' }}>Criteria</Typography>
             <Card style={{ marginTop: '20px', padding: '20px' }}>
-            <CardContent>
-            <Grid container spacing={2}>
-                {[...Array(Number(noOfCriteria))].map((_, index) => (
+              <CardContent>
+                <Grid container spacing={2}>
+                  {[...Array(Number(noOfCriteria))].map((_, index) => (
                     <Grid item xs={12} sm={6} key={index}>
-                        <TextField
-                            label={`Criteria ${index + 1}`}
-                            variant="outlined"
-                            fullWidth
-                            name={`criteriaName${index + 1}`}
-                            onChange={(e) => {
-                                const newCriteria = [...criteria];
-                                newCriteria[index] = { ...newCriteria[index], name: e.target.value };
-                                setCriteria(newCriteria);
-                            }}
-                            InputProps={{
-                                startAdornment: <InputAdornment position="start"><EventIcon /></InputAdornment>,
-                            }}
-                            style={{ marginTop: "10px" }}
-                        />
-                        <TextField
-                            label={`Percentage`}
-                            variant="outlined"
-                            fullWidth
-                            type="number"
-                            name={`criteriaPercentage${index + 1}`}
-                            onChange={(e) => {
-                                const newCriteria = [...criteria];
-                                newCriteria[index] = { ...newCriteria[index], percentage: e.target.value };
-                                setCriteria(newCriteria);
-                            }}
-                            InputProps={{
-                                startAdornment: <InputAdornment position="start">%</InputAdornment>,
-                            }}
-                            style={{ marginTop: "10px" }}
-                        />
+                      <TextField
+                        label={`Criteria ${index + 1}`}
+                        variant="outlined"
+                        fullWidth
+                        name={`criteriaName${index + 1}`}
+                        onChange={(e) => {
+                          const newCriteria = [...criteria];
+                          newCriteria[index] = { ...newCriteria[index], name: e.target.value };
+                          setCriteria(newCriteria);
+                        }}
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start"><EventIcon /></InputAdornment>,
+                        }}
+                        style={{ marginTop: "10px" }}
+                      />
+                      <TextField
+                        label={`Percentage`}
+                        variant="outlined"
+                        fullWidth
+                        type="number"
+                        name={`criteriaPercentage${index + 1}`}
+                        onChange={(e) => {
+                          const newCriteria = [...criteria];
+                          newCriteria[index] = { ...newCriteria[index], percentage: e.target.value };
+                          setCriteria(newCriteria);
+                        }}
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                        }}
+                        style={{ marginTop: "10px" }}
+                      />
                     </Grid>
-                ))}
-            </Grid>
-            {totalPercentageError && (
-            <Alert variant="filled" severity="error" sx={{marginTop:"10px"}}>
-              Total percentage should be 100
-            </Alert>
-          )}
-            </CardContent>
+                  ))}
+                </Grid>
+                {totalPercentageError && (
+                  <Alert variant="filled" severity="error" sx={{ marginTop: "10px" }}>
+                    Total percentage should be 100
+                  </Alert>
+                )}
+              </CardContent>
             </Card>
             <Button variant="contained" color="primary" onClick={handleSubmit} style={{ marginTop: "20px" }}>
               Submit

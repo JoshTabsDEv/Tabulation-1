@@ -19,4 +19,16 @@ router.post('/', async (req, res) => {
     }
   });
 
+  router.get('/getJudges/:eventId', async (req, res) => {
+    try {
+      const { eventId } = req.params;
+      const judges = await Judge.findAll({ where: { event_id: eventId } });
+      res.json(judges);
+    } catch (error) {
+      console.error('Error fetching judges:', error);
+      res.status(500).json({ message: 'Failed to fetch judges' });
+    }
+  });
+  
+
 module.exports = router;

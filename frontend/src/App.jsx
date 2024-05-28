@@ -8,6 +8,10 @@ import {
 import Dashboard from './pages/Dashboard'
 import StartEvent from './pages/StartEvent'
 import Login from './components/Login'
+import JudgeCredentials from "./pages/JudgeCredentials";
+import JudgeDashboard from "./pages/JudgeDashboard";
+import ThankYouPage from "./pages/ThankYouPage";
+import ScorePanel from "./pages/ScorePanel";
 
  
 function App() {
@@ -31,6 +35,26 @@ function App() {
   {
     path:"/eventStart/:eventId",
     element:<StartEvent/>
+  },
+  {
+    path:"/GenerateJudgeCredentials/:eventId",
+    element:<JudgeCredentials/>
+  },
+  {
+    path:"/:eventId",
+    element:<Login/>
+  },
+  {
+    path:"/judge/:eventId/:judgeID",
+    element:<JudgeDashboard/>
+  },
+  {
+    path:"/done",
+    element:<ThankYouPage/>
+  },
+  {
+    path:"/Scores/:eventId",
+    element:<ScorePanel/>
   }
  ])
 

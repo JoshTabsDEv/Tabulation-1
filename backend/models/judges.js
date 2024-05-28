@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
     judge_name: {
       type: DataTypes.STRING,
       allowNull: false
+    },judge_code:{
+      type: DataTypes.INTEGER,
+      allowNull:false
     },
     event_id: {
       type: DataTypes.INTEGER,
