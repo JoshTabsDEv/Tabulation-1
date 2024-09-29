@@ -1,0 +1,1 @@
+My 2nd year solo project on my Advance Database. This project is a CMS Tabulation System. I develop this app while learning React , Express and API. This app enable a Dynamic adding of Events, Judges, Contestants, and Criterias. 
